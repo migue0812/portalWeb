@@ -17,7 +17,7 @@ class usuarioTable extends usuarioBaseTable {
         return ($answer->rowCount() > 0) ? $answer->fetchAll(PDO::FETCH_OBJ) : false;
     }
 
-    public function getById($id) {
+    public function getById($id = null) {
         $conn = $this->getConnection($this->config);
         $sql = 'SELECT usu_id AS id, usu_usuario AS usuario, usu_password AS password, '
                 . 'usu_activado AS activado, rol_id AS rol_id, usu_created_at AS created_at, '
@@ -26,7 +26,7 @@ class usuarioTable extends usuarioBaseTable {
                 . 'WHERE usu_deleted_at IS NULL '
                 . 'AND usu_id = :id';
         $params = array(
-            ':id' => $id
+            ':id' => ($id !== null) ? $id : $this->getById()
         );
         $answer = $conn->prepare($sql);
         $answer->execute($params);
@@ -47,7 +47,8 @@ class usuarioTable extends usuarioBaseTable {
         );
         $answer = $conn->prepare($sql);
         $answer->execute($params);
-        return $conn->lastInsertId();
+        $this->setId($conn->lastInsertId());
+        return true;
     }
 
     public function update() {

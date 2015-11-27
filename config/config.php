@@ -4,15 +4,15 @@ use FStudio\myConfig as config;
 
 $config = new config();
 
-$config->setPath('/Applications/MAMP/htdocs/FStudio/');
-$config->setUrl('http://localhost/FStudio/web/');
+$config->setPath('C:/xampp/htdocs/portalWeb/');
+$config->setUrl('http://localhost/portalWeb/web/');
 
-$config->setDriver('pgsql');
+$config->setDriver('mysql');
 $config->setHost('localhost');
-$config->setPort(5432);
-$config->setDbName('fstudio');
-$config->setUser('postgres');
-$config->setPassword('sqlx32');
+$config->setPort(3306);
+$config->setDbName('portalweb');
+$config->setUser('root');
+$config->setPassword('');
 $config->setDsn(
         $config->getDriver()
         . ':host=' . $config->getHost()

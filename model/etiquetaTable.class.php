@@ -17,7 +17,7 @@ class etiquetaTable extends etiquetaBaseTable {
         return ($answer->rowCount() > 0) ? $answer->fetchAll(PDO::FETCH_OBJ) : false;
     }
 
-    public function getById($id) {
+    public function getById($id = null) {
         $conn = $this->getConnection($this->config);
         $sql = 'SELECT eti_id AS id, eti_nombre AS nombre, sit_id AS sitio_id, '
                 . 'eve_id AS evento_id, eti_created_at AS created_at, '
@@ -26,7 +26,7 @@ class etiquetaTable extends etiquetaBaseTable {
                 . 'WHERE eti_deleted_at IS NULL '
                 . 'AND eti_id = :id';
         $params = array(
-            ':id' => $id
+            ':id' => ($id !== null) ? $id : $this->getById()
         );
         $answer = $conn->prepare($sql);
         $answer->execute($params);
@@ -46,7 +46,8 @@ class etiquetaTable extends etiquetaBaseTable {
         );
         $answer = $conn->prepare($sql);
         $answer->execute($params);
-        return $conn->lastInsertId();
+        $this->setId($conn->lastInsertId());
+        return true;
     }
 
     public function update() {

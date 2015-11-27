@@ -16,7 +16,7 @@ class usuarioTable extends rolBaseTable {
         return ($answer->rowCount() > 0) ? $answer->fetchAll(PDO::FETCH_OBJ) : false;
     }
 
-    public function getById($id) {
+    public function getById($id = null) {
         $conn = $this->getConnection($this->config);
         $sql = 'SELECT rol_id AS id, rol_rol AS rol, rol_created_at AS created_at, '
                 . 'rol_updated_at AS updated_at, rol_deleted_at AS deleted_at '
@@ -24,7 +24,7 @@ class usuarioTable extends rolBaseTable {
                 . 'WHERE rol_deleted_at IS NULL '
                 . 'AND rol_id = :id';
         $params = array(
-            ':id' => $id
+            ':id' => ($id !== null) ? $id : $this->getById()
         );
         $answer = $conn->prepare($sql);
         $answer->execute($params);
@@ -42,7 +42,8 @@ class usuarioTable extends rolBaseTable {
         );
         $answer = $conn->prepare($sql);
         $answer->execute($params);
-        return $conn->lastInsertId();
+        $this->setId($conn->lastInsertId());
+        return true;
     }
 
     public function update() {

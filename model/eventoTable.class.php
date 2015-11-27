@@ -23,7 +23,7 @@ class eventoTable extends eventoBaseTable {
         return ($answer->rowCount() > 0) ? $answer->fetchAll(PDO::FETCH_OBJ) : false;
     }
 
-    public function getById($id) {
+    public function getById($id = null) {
         $conn = $this->getConnection($this->config);
         $sql = 'SELECT eve_id AS id, usu_id AS usuario_id, cat_id AS categoria_id, '
                 . 'eve_nombre AS nombre, eve_fecha_hora AS fecha_hora, '
@@ -38,7 +38,7 @@ class eventoTable extends eventoBaseTable {
                 . 'WHERE eve_deleted_at IS NULL '
                 . 'AND eve_id = :id';
         $params = array(
-            ':id' => $id
+            ':id' => ($id !== null) ? $id : $this->getById()
         );
         $answer = $conn->prepare($sql);
         $answer->execute($params);
@@ -74,7 +74,8 @@ class eventoTable extends eventoBaseTable {
         );
         $answer = $conn->prepare($sql);
         $answer->execute($params);
-        return $conn->lastInsertId();
+        $this->setId($conn->lastInsertId());
+        return true;
     }
 
     public function update() {
